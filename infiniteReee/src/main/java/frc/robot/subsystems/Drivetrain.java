@@ -16,11 +16,13 @@ public class Drivetrain extends SubsystemBase {
   private final Spark leftMotor;
   private final Spark rightMotor;
   private final DifferentialDrive dfDrive;
+  private ControlPanel controlPanel;
   
   public enum systemStates {
     NEUTRAL,
     OPEN_LOOP
   }
+  
   private systemStates currentState;
   private systemStates requestedState;
   private double wantedX;
@@ -32,6 +34,7 @@ public class Drivetrain extends SubsystemBase {
     leftMotor = new Spark(0);
     rightMotor = new Spark(1);
     dfDrive = new DifferentialDrive(leftMotor, rightMotor);
+    controlPanel = ControlPanel.getInstance();
   }
   
   
@@ -54,21 +57,20 @@ public class Drivetrain extends SubsystemBase {
     this.wantedzRotation = wantedzRotation;
   }
   private void tank() {
-    dfDrive.arcadeDrive(wantedX, wantedzRotation);
+    dfDrive.arcadeDrive(controlPanel.getDriveAmount(), controlPanel.getSteerAmount());
   }
   @Override
   public void periodic() {
     switch(currentState){
       case NEUTRAL:
-        defaultStateChange();
         wantedX = 0.0;
         wantedzRotation = 0.0;
         tank();
         break;
       case OPEN_LOOP:
         tank();
-        defaultStateChange();
         break;
     }
+    defaultStateChange();
   }
 }

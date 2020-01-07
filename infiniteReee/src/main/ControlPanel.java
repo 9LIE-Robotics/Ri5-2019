@@ -1,11 +1,9 @@
 public class ControlPanel {
     private static ControlPanel instance = new ControlPanel();
-    private Joystick driveStick; // -1 to 1
-    private Joystick steerStick; // -1 to 1
+    private Joystick driveController; 
 
     public ControlPanel() {
-        driveStick = new Joystick(0);
-        steerStick = new Joystick(1);
+        driveController = new Joystick(0);
     }
 
     public ControlPanel getInstance() {
@@ -13,10 +11,10 @@ public class ControlPanel {
     }
 
     public double getDriveAmount() {
-        return driveStick.get();
+        return driveController.getAxis(0).get();
     }
 
     public double getSteerAmount() {
-        return steerStick.get();
+        return steerStick.getAxis(5).get();
     }
 }
