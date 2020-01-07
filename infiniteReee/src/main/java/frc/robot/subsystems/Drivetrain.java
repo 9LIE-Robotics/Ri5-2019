@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ControlPanel;
 
 public class Drivetrain extends SubsystemBase {
   public static Drivetrain instance = new Drivetrain();
@@ -35,6 +36,7 @@ public class Drivetrain extends SubsystemBase {
     rightMotor = new Spark(1);
     dfDrive = new DifferentialDrive(leftMotor, rightMotor);
     controlPanel = ControlPanel.getInstance();
+    currentState = systemStates.OPEN_LOOP;
   }
   
   
@@ -61,16 +63,18 @@ public class Drivetrain extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    switch(currentState){
-      case NEUTRAL:
-        wantedX = 0.0;
-        wantedzRotation = 0.0;
-        tank();
-        break;
-      case OPEN_LOOP:
-        tank();
-        break;
-    }
+    // switch(currentState){
+    //   case NEUTRAL
+    //     wantedX = 0.0;
+    //     wantedzRotation = 0.0;
+    //     tank();
+    //     break;
+    //   case OPEN_LOOP:
+    //     tank();
+    //     break;
+    // }
+    leftMotor.set(.5);
+    //tank();
     defaultStateChange();
   }
 }
