@@ -7,17 +7,17 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Spark;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.ControlPanel;
+import frc.robot.OI;
 
 public class Drivetrain extends SubsystemBase {
   public static Drivetrain instance = new Drivetrain();
-  private final Spark leftMotor;
-  private final Spark rightMotor;
+  private final CANSparkMax m_rightMotor;
+  private final CANSparkMax m_leftMotor;
   private final DifferentialDrive dfDrive;
-  private ControlPanel controlPanel;
   
   public enum systemStates {
     NEUTRAL,
@@ -26,16 +26,14 @@ public class Drivetrain extends SubsystemBase {
   
   private systemStates currentState;
   private systemStates requestedState;
-  private double wantedX;
-  private double wantedzRotation;
+
   /**
    * Creates a new Drivetrain.
    */
   public Drivetrain() {
-    leftMotor = new Spark(0);
-    rightMotor = new Spark(1);
-    dfDrive = new DifferentialDrive(leftMotor, rightMotor);
-    controlPanel = ControlPanel.getInstance();
+    m_rightMotor = new CANSparkMax(1, MotorType.kBrushless);
+    m_leftMotor = new CANSparkMax(2, MotorType.kBrushless);
+    dfDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     currentState = systemStates.OPEN_LOOP;
   }
   
@@ -46,21 +44,21 @@ public class Drivetrain extends SubsystemBase {
   public static Drivetrain getInstance() {
     return instance;
   }
+
   private void defaultStateChange() {
 		if(requestedState!=currentState) {
 			currentState = requestedState;
-		}
+    }
   }
+
   public void setSystemState (systemStates state) {
     requestedState = state;
   }
-  public void drive(double wantedX, double wantedzRotation) {
-    this.wantedX = wantedX;
-    this.wantedzRotation = wantedzRotation;
+
+  private void arcade() {
+    dfDrive.arcadeDrive(OI.getDriveAmount(), OI.getSteerAmount());
   }
-  private void tank() {
-    dfDrive.arcadeDrive(controlPanel.getDriveAmount(), controlPanel.getSteerAmount());
-  }
+
   @Override
   public void periodic() {
     // switch(currentState){
@@ -73,8 +71,7 @@ public class Drivetrain extends SubsystemBase {
     //     tank();
     //     break;
     // }
-    leftMotor.set(.5);
-    //tank();
+    arcade();
     defaultStateChange();
   }
 }
