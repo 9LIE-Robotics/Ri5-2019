@@ -113,7 +113,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    //drivetrain.tankVoltageDrive(2, 0.0);
+    if(OI.getCalibrateKD()) {
+      drivetrain.setSystemState(systemStates.CALIBRATIONKD);
+    }
+    else if (OI.getCalibrateKS()) {
+      drivetrain.setSystemState(systemStates.CALIBRATIONKS);
+    }
+    else {
+      drivetrain.setSystemState(systemStates.OPEN_LOOP);
+    }
   }
 
   @Override
@@ -128,6 +136,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
   public static final double kTrackwidthMeters = Units.inchesToMeters(24);
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackwidthMeters);
@@ -160,8 +169,8 @@ public class Robot extends TimedRobot {
    new Pose2d(0, 0, new Rotation2d(0)),
    // Pass through these two interior waypoints, making an 's' curve path
     List.of(
-         new Translation2d(.5, .5)
-         //new Translation2d(1, -.5)
+         new Translation2d(.5, .5),
+         new Translation2d(1, -.5)
     ),
    // End 3 meters straight ahead of where we started, facing forward
    new Pose2d(2, 0, new Rotation2d(0)),

@@ -29,16 +29,18 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax m_leftMotor;
   private final DifferentialDrive dfDrive;
   private DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(Units.inchesToMeters(24)));
-  private DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(0));
+  private DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getHeading());
   private AHRS gyro; 
   private Pose2d pose = new Pose2d();
   private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.228, 5.0, .0144);
   public enum systemStates {
     NEUTRAL,
-    OPEN_LOOP
+    OPEN_LOOP,
+    CALIBRATIONKS,
+    CALIBRATIONKD
   }
   
-  private systemStates currentState;
+  private systemStates currentState = systemStates.OPEN_LOOP;
   private systemStates requestedState;
 
   /**
@@ -106,7 +108,7 @@ public class Drivetrain extends SubsystemBase {
     requestedState = state;
   }
 
-  private void arcade() {
+  public void arcade() {
     dfDrive.arcadeDrive(OI.getDriveAmount(), OI.getSteerAmount());
   }
   public void tankVoltageDrive(double leftVoltage, double rightVoltage) {
@@ -120,25 +122,54 @@ public class Drivetrain extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
+  private double kS = 0.0;
+  private double kD = 0.0;
+  private double kA = 0.0;
+  
+  private void calibratekS() {
+    double stepValue = 0.001;
+    double voltageApplied = 0.0;
+    if(getSpeeds().leftMetersPerSecond < 0.001) {
+      tankVoltageDrive(voltageApplied, voltageApplied);
+      voltageApplied += stepValue;
+    } else {
+      kS = voltageApplied;
+      SmartDashboard.putNumber("kS", kS);
+    }
+  }
+  private double[] voltages;
+  private double[] speeds;
+  private double oldSpeed = 0.0;
+  private void calibratekD() {
+    double testVoltage = SmartDashboard.getNumber("Voltage", 0.0);
+    tankVoltageDrive(testVoltage, testVoltage);
+    double deltaSpeed = getSpeeds().leftMetersPerSecond - oldSpeed;
+    if (deltaSpeed < .05) {
+      SmartDashboard.putNumber("speed", oldSpeed);
+    }
+    oldSpeed = getSpeeds().leftMetersPerSecond;
+  }
   
 
   @Override
   public void periodic() {
-    // switch(currentState){
-    //   case NEUTRAL
-    //     wantedX = 0.0;
-    //     wantedzRotation = 0.0;
-    //     tank();
-    //     break;
-    //   case OPEN_LOOP:
-    //     tank();
-    //     break;
-    // }
+    switch(currentState){
+      case NEUTRAL:
+        break;
+      case OPEN_LOOP:
+        arcade();
+        break;
+      case CALIBRATIONKS:
+        calibratekS();
+        break;
+      case CALIBRATIONKD:
+        calibratekD();
+        break;
+    }
     if(OI.getResetGyroButton()) {
       resetGyro();
     }
     pose = odometry.update(getHeading(), getLeftDistance(), getRightDistance());
-    arcade();
     defaultStateChange();
     //System.out.println(getRightDistance());
     System.out.println(getPose().getTranslation().getX() + " , " + getPose().getTranslation().getY() 

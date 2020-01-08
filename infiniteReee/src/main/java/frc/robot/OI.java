@@ -17,6 +17,12 @@ public class OI {
     public static boolean getResetGyroButton() {
         return driveController.getRawButton(8);
     }
+    public static boolean getCalibrateKS() {
+        return driveController.getRawButton(7);
+    }
+    public static boolean getCalibrateKD() {
+        return driveController.getRawButton(6);
+    }
     public static JoystickButton getShootButton() {
         return new JoystickButton(driveController, 1);
     }
