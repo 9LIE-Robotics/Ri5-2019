@@ -7,10 +7,23 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.subsystems.Drivetrain.systemStates;
 
 /**
@@ -67,7 +80,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = auto();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -92,13 +105,16 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     drivetrain.setSystemState(systemStates.OPEN_LOOP);
+    
   }
 
   /**
    * This function is called periodically during operator control.
    */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    //drivetrain.tankVoltageDrive(2, 0.0);
+  }
 
   @Override
   public void testInit() {
@@ -111,5 +127,54 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+  public static final double kTrackwidthMeters = Units.inchesToMeters(24);
+    public static final DifferentialDriveKinematics kDriveKinematics =
+        new DifferentialDriveKinematics(kTrackwidthMeters);
+    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
+     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
+     public static final double kRamseteB = 2;
+     public static final double kRamseteZeta = 0.7;
+  public Command auto() {
+    
+    Drivetrain drivetrain = Drivetrain.getInstance();
+    /**
+     * Creates a new auto.
+     */
+   // Create a voltage constraint to ensure we don't accelerate too fast
+   DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(drivetrain.getFeedForward(),
+   drivetrain.getKinematics(),8.0);
+  
+  // Create config for trajectory
+  TrajectoryConfig config = new TrajectoryConfig(kMaxSpeedMetersPerSecond,
+                        kMaxAccelerationMetersPerSecondSquared)
+       // Add kinematics to ensure max speed is actually obeyed
+       .setKinematics(drivetrain.getKinematics())
+       // Apply the voltage constraint
+       .addConstraint(autoVoltageConstraint);
+  
+  // An example trajectory to follow.  All units in meters.
+  Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+   // Start at the origin facing the +X direction
+   new Pose2d(0, 0, new Rotation2d(0)),
+   // Pass through these two interior waypoints, making an 's' curve path
+    List.of(
+         new Translation2d(.5, .5)
+         //new Translation2d(1, -.5)
+    ),
+   // End 3 meters straight ahead of where we started, facing forward
+   new Pose2d(2, 0, new Rotation2d(0)),
+   // Pass config
+   config
+  );
+  RamseteCommand ramseteCommand = new RamseteCommand( exampleTrajectory, drivetrain::getPose, new RamseteController(kRamseteB, kRamseteZeta),
+   drivetrain.getFeedForward(), drivetrain.getKinematics(), drivetrain::getSpeeds, new edu.wpi.first.wpilibj.controller.PIDController(5, 0.0, 0.0), 
+   new edu.wpi.first.wpilibj.controller.PIDController(5,0.0,0.0), drivetrain::tankVoltageDrive, drivetrain);
+  
+  
+  // Run path following command, then stop at the end.
+  return ramseteCommand.andThen(() -> drivetrain.tankVoltageDrive(0, 0));
+  
   }
 }

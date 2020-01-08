@@ -8,13 +8,15 @@ public class OI {
     private static Joystick steerController = (usingXBoxController) ? null : new Joystick(1);
 
     public static double getDriveAmount() {
-        return (usingXBoxController) ? driveController.getRawAxis(0) * -0.5 : driveController.getY() * -1;
+        return (usingXBoxController) ? driveController.getRawAxis(0) * -0.5 : steerController.getX();
     }
 
     public static double getSteerAmount() {
-        return (usingXBoxController) ? driveController.getRawAxis(5) * -0.5 : steerController.getX() * -1;
+        return (usingXBoxController) ? driveController.getRawAxis(5) * -0.5 : driveController.getY() * -1;
     }
-
+    public static boolean getResetGyroButton() {
+        return driveController.getRawButton(8);
+    }
     public static JoystickButton getShootButton() {
         return new JoystickButton(driveController, 1);
     }
