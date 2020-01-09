@@ -80,6 +80,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    drivetrain.resetEncoders();
+    drivetrain.resetGyro();
     m_autonomousCommand = auto();
 
     // schedule the autonomous command (example)
@@ -138,9 +140,7 @@ public class Robot extends TimedRobot {
   }
 
   public static final double kTrackwidthMeters = Units.inchesToMeters(24);
-    public static final DifferentialDriveKinematics kDriveKinematics =
-        new DifferentialDriveKinematics(kTrackwidthMeters);
-    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxSpeedMetersPerSecond = 1;
     public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
      // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
      public static final double kRamseteB = 2;
@@ -169,17 +169,23 @@ public class Robot extends TimedRobot {
    new Pose2d(0, 0, new Rotation2d(0)),
    // Pass through these two interior waypoints, making an 's' curve path
     List.of(
-         new Translation2d(.5, .5),
-         new Translation2d(1, -.5)
+          // new Translation2d(1, 1),
+          // new Translation2d(2, 0)
+          // new Translation2d(3, -1)
+          //new Translation2d(4,0)
+          // new Translation2d(3,1),
+          // new Translation2d(2,0),
+          // new Translation2d(1,-1)
+
     ),
    // End 3 meters straight ahead of where we started, facing forward
-   new Pose2d(2, 0, new Rotation2d(0)),
+   new Pose2d(3, 0, Rotation2d.fromDegrees(0)),
    // Pass config
    config
   );
   RamseteCommand ramseteCommand = new RamseteCommand( exampleTrajectory, drivetrain::getPose, new RamseteController(kRamseteB, kRamseteZeta),
-   drivetrain.getFeedForward(), drivetrain.getKinematics(), drivetrain::getSpeeds, new edu.wpi.first.wpilibj.controller.PIDController(5, 0.0, 0.0), 
-   new edu.wpi.first.wpilibj.controller.PIDController(5,0.0,0.0), drivetrain::tankVoltageDrive, drivetrain);
+   drivetrain.getFeedForward(), drivetrain.getKinematics(), drivetrain::getSpeeds, new edu.wpi.first.wpilibj.controller.PIDController(1.5, 0.0, 0.0), 
+   new edu.wpi.first.wpilibj.controller.PIDController(1.5,0.0,0.0), drivetrain::tankVoltageDrive, drivetrain);
   
   
   // Run path following command, then stop at the end.

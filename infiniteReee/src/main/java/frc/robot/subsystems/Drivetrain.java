@@ -28,15 +28,15 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax m_rightMotor;
   private final CANSparkMax m_leftMotor;
   private final DifferentialDrive dfDrive;
-  private DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(Units.inchesToMeters(24)));
-  private DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getHeading());
+  private DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(24));
+  private DifferentialDriveOdometry odometry;
   private AHRS gyro; 
   private Pose2d pose = new Pose2d();
-  private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.228, 5.0, .0144);
+  private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.2, 3.427, .0144);
   public enum systemStates {
     NEUTRAL,
     OPEN_LOOP,
-    CALIBRATIONKS,
+    CALIBRATIONKS, 
     CALIBRATIONKD
   }
   
@@ -52,6 +52,7 @@ public class Drivetrain extends SubsystemBase {
     dfDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     currentState = systemStates.OPEN_LOOP;
     gyro = new AHRS(SPI.Port.kMXP);
+    odometry = new DifferentialDriveOdometry(getHeading());
     m_rightMotor.setInverted(true);
     m_leftMotor.setInverted(false);
     m_rightMotor.getEncoder().setPositionConversionFactor(1.0 / 8.45 * Math.PI * Units.inchesToMeters(4));
@@ -125,14 +126,16 @@ public class Drivetrain extends SubsystemBase {
   private double kS = 0.0;
   private double kD = 0.0;
   private double kA = 0.0;
-  
+  private double voltageApplied = 0.0;
+  private boolean hasCal = false;
   private void calibratekS() {
     double stepValue = 0.001;
-    double voltageApplied = 0.0;
-    if(getSpeeds().leftMetersPerSecond < 0.001) {
+    
+    if(getSpeeds().leftMetersPerSecond < 0.01 && !hasCal) {
       tankVoltageDrive(voltageApplied, voltageApplied);
       voltageApplied += stepValue;
     } else {
+      hasCal = true;
       kS = voltageApplied;
       SmartDashboard.putNumber("kS", kS);
     }
@@ -141,7 +144,7 @@ public class Drivetrain extends SubsystemBase {
   private double[] speeds;
   private double oldSpeed = 0.0;
   private void calibratekD() {
-    double testVoltage = SmartDashboard.getNumber("Voltage", 0.0);
+    double testVoltage = 7.0;//SmartDashboard.getNumber("Voltage", 0.0);
     tankVoltageDrive(testVoltage, testVoltage);
     double deltaSpeed = getSpeeds().leftMetersPerSecond - oldSpeed;
     if (deltaSpeed < .05) {
@@ -153,19 +156,21 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    switch(currentState){
-      case NEUTRAL:
-        break;
-      case OPEN_LOOP:
-        arcade();
-        break;
-      case CALIBRATIONKS:
-        calibratekS();
-        break;
-      case CALIBRATIONKD:
-        calibratekD();
-        break;
-    }
+    // switch(currentState){
+    //   case NEUTRAL:
+    //     break;
+    //   case OPEN_LOOP:
+    //     arcade();
+    //     break;
+    //   case CALIBRATIONKS:
+    //     calibratekS();
+    //     break;
+    //   case CALIBRATIONKD:
+    //     calibratekD();
+    //     break;
+    // }
+    //double volts = feedforward.calculate(getSpeeds().leftMetersPerSecond);
+    //tankVoltageDrive(volts, volts);
     if(OI.getResetGyroButton()) {
       resetGyro();
     }
