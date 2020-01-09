@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
   private Drivetrain drivetrain = Drivetrain.getInstance();
   PowerDistributionPanel pd = new PowerDistributionPanel();
   //private WheelShooter wheelShooter = new WheelShooter();
-  Victor victor;
+  //Victor victor;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    victor = new Victor(0);
+    //victor = new Victor(0);
     
   }
 
@@ -104,8 +104,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    victor.set(0);
+    //victor.set(0);
   }
+  
   private double speed = 0.0;
   @Override
   public void teleopInit() {
@@ -136,11 +137,11 @@ public class Robot extends TimedRobot {
     else {
       drivetrain.setSystemState(systemStates.OPEN_LOOP);
     }
-    SmartDashboard.putNumber("amps", pd.getCurrent(0));
-    if( speed < .95) {
-      speed += .05;
-    }
-    victor.set(speed);
+    // SmartDashboard.putNumber("amps", pd.getCurrent(0));
+    // if( speed < .95) {
+    //   speed += .05;
+    // }
+    // victor.set(speed);
   }
 
   @Override

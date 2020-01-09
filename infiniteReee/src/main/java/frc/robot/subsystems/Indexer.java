@@ -11,35 +11,25 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class WheelShooter extends SubsystemBase {
-  public static WheelShooter instance = new WheelShooter();
-  private final Victor m_wheelMotor;
-  private final Victor m_kickerMotor;
+public class Indexer extends SubsystemBase {
+  public static Indexer instance = new Indexer();
+  private final Victor m_indexerMotor;
 
   /**
-   * Creates a new WheelShooter.
+   * Creates a new Indexer.
    */
-  public WheelShooter() {
-    m_wheelMotor = new Victor(Constants.WHEEL_SHOOTER_PORT);
-    m_kickerMotor = new Victor(Constants.KICKER_SHOOTER_PORT);
+  public Indexer() {
+    m_indexerMotor = new Victor(Constants.INDEXER_PORT);
   }
 
   /**
    * @return the instance of the drive train to be used
    */
-  public static WheelShooter getInstance() {
+  public static Indexer getInstance() {
     return instance;
   }
 
-  public void periodic() {
-    //m_wheelMotor.set(Constants.SHOOT_SPEED);
-  }
-
-  public void setKickerSpeed(double speed) {
-    m_kickerMotor.set(speed);
-  }
-
-  public void setWheelSpeed(double speed) {
-      m_wheelMotor.set(speed);
+  public void setSpeed(double speed) {
+    m_indexerMotor.set(speed);
   }
 }

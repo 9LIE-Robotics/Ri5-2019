@@ -10,9 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.*;
-import frc.robot.commands.*;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.WheelShooter.*;
+import frc.robot.commands.Intake.*;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -21,14 +20,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+  private final WheelShooter m_wheelShooter = new WheelShooter();
+  private final Intake m_intake = new Intake();
 
-  // Wheel Shooter Subsystem and Commands
-  //private final WheelShooter m_wheelShooter = new WheelShooter();
-  //private final FireCells fireCells = new FireCells(m_wheelShooter);
-  //private final StopShooter stopShooter = new StopShooter(m_wheelShooter);
-
-  //private final Drivetrain driveTrain = Drivetrain.getInstance();
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -45,7 +39,10 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //OI.getShootButton().whenActive(fireCells);
-    //OI.getShootButton().whenInactive(fireCells);
+    OI.getShootButton().whenActive(new Fire(m_wheelShooter));
+    OI.getShootButton().whenInactive(new StopShooter(m_wheelShooter));
+
+    OI.getIntakeButton().whenActive(new Swallow(m_intake));
+    OI.getIntakeButton().whenInactive(new StopIntake(m_intake));
   }
 }

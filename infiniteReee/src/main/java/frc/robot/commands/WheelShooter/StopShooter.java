@@ -5,8 +5,9 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.commands.WheelShooter;
 
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.WheelShooter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -15,40 +16,28 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class StopShooter extends CommandBase {
   private final WheelShooter m_wheelShooter;
-  private boolean speedSet;
 
   /**
    * Creates a new FireCells.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public StopShooter(WheelShooter wheelShooter) {
-    m_wheelShooter = wheelShooter;
+  public StopShooter(WheelShooter m_wheelShooter2) {
+    m_wheelShooter = m_wheelShooter2;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(wheelShooter);
+    addRequirements(m_wheelShooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    speedSet = false;
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_wheelShooter.setSpeed(0.0);
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    speedSet = true;
+    m_wheelShooter.setKickerSpeed(0.0);
+    m_wheelShooter.setWheelSpeed(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return speedSet;
+    return true;
   }
 }

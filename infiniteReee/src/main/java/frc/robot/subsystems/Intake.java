@@ -11,35 +11,25 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class WheelShooter extends SubsystemBase {
-  public static WheelShooter instance = new WheelShooter();
-  private final Victor m_wheelMotor;
-  private final Victor m_kickerMotor;
+public class Intake extends SubsystemBase {
+  public static Intake instance = new Intake();
+  private final Victor m_intakeMotor;
 
   /**
-   * Creates a new WheelShooter.
+   * Creates a new Intake.
    */
-  public WheelShooter() {
-    m_wheelMotor = new Victor(Constants.WHEEL_SHOOTER_PORT);
-    m_kickerMotor = new Victor(Constants.KICKER_SHOOTER_PORT);
+  public Intake() {
+    m_intakeMotor = new Victor(Constants.INTAKE_PORT);
   }
 
   /**
    * @return the instance of the drive train to be used
    */
-  public static WheelShooter getInstance() {
+  public static Intake getInstance() {
     return instance;
   }
 
-  public void periodic() {
-    //m_wheelMotor.set(Constants.SHOOT_SPEED);
-  }
-
-  public void setKickerSpeed(double speed) {
-    m_kickerMotor.set(speed);
-  }
-
-  public void setWheelSpeed(double speed) {
-      m_wheelMotor.set(speed);
+  public void setSpeed(double speed) {
+    m_intakeMotor.set(speed);
   }
 }
