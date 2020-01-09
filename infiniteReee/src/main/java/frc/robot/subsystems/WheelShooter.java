@@ -7,21 +7,19 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class WheelShooter extends SubsystemBase {
   public static WheelShooter instance = new WheelShooter();
-  private final CANSparkMax m_wheelMotor;
+  private final Victor m_wheelMotor;
 
   /**
    * Creates a new WheelShooter.
    */
   public WheelShooter() {
-    m_wheelMotor = new CANSparkMax(3, MotorType.kBrushless);
+    m_wheelMotor = new Victor(Constants.WHEEL_SHOOTER_PORT);
   }
 
   /**
@@ -34,7 +32,4 @@ public class WheelShooter extends SubsystemBase {
   public void setSpeed(double speed) {
       m_wheelMotor.set(speed);
   }
-
-  @Override
-  public void periodic() {}
 }

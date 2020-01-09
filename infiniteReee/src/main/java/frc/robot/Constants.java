@@ -16,5 +16,12 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /**
+     * ROBOT MAP
+     */
+    public final static int DRIVE_LEFT_ID = 0;
+    public final static int DRIVE_RIGHT_ID = 1;
+    public final static int WHEEL_SHOOTER_PORT = 0;
+
     public final static double SHOOT_SPEED = 0.8;
 }

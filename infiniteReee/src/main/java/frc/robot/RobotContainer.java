@@ -22,10 +22,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  //private final Drivetrain driveTrain = Drivetrain.getInstance();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  // Wheel Shooter Subsystem and Commands
+  private final WheelShooter m_wheelShooter = new WheelShooter();
+  private final FireCells fireCells = new FireCells(m_wheelShooter);
+  private final StopShooter stopShooter = new StopShooter(m_wheelShooter);
+
+  //private final Drivetrain driveTrain = Drivetrain.getInstance();
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -42,16 +45,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    OI.getShootButton().whenActive(fireCells);
+    OI.getShootButton().whenInactive(stopShooter);
   }
 }
