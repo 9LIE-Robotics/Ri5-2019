@@ -7,19 +7,20 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class WheelShooter extends SubsystemBase {
   public static WheelShooter instance = new WheelShooter();
-  private final Victor m_wheelMotor;
+  //private final Talon m_wheelMotor;
 
   /**
    * Creates a new WheelShooter.
    */
   public WheelShooter() {
-    m_wheelMotor = new Victor(Constants.WHEEL_SHOOTER_PORT);
+    //m_wheelMotor = new Talon(Constants.WHEEL_SHOOTER_PORT);
   }
 
   /**
@@ -29,7 +30,11 @@ public class WheelShooter extends SubsystemBase {
     return instance;
   }
 
+  public void periodic() {
+    //m_wheelMotor.set(Constants.SHOOT_SPEED);
+  }
+
   public void setSpeed(double speed) {
-      m_wheelMotor.set(speed);
+      //m_wheelMotor.set(speed);
   }
 }

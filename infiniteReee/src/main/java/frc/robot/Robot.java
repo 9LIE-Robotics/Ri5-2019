@@ -9,12 +9,15 @@ package frc.robot;
 
 import java.util.List;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -25,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.subsystems.Drivetrain.systemStates;
+import frc.robot.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -37,6 +41,9 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private Drivetrain drivetrain = Drivetrain.getInstance();
+  PowerDistributionPanel pd = new PowerDistributionPanel();
+  //private WheelShooter wheelShooter = new WheelShooter();
+  Victor victor;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -46,6 +53,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    victor = new Victor(0);
+    
   }
 
   /**
@@ -95,8 +104,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    victor.set(0);
   }
-
+  private double speed = 0.0;
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
@@ -106,6 +116,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    speed = 0.0;
     drivetrain.setSystemState(systemStates.OPEN_LOOP);
     
   }
@@ -113,6 +124,7 @@ public class Robot extends TimedRobot {
   /**
    * This function is called periodically during operator control.
    */
+  
   @Override
   public void teleopPeriodic() {
     if(OI.getCalibrateKD()) {
@@ -124,6 +136,11 @@ public class Robot extends TimedRobot {
     else {
       drivetrain.setSystemState(systemStates.OPEN_LOOP);
     }
+    SmartDashboard.putNumber("amps", pd.getCurrent(0));
+    if( speed < .95) {
+      speed += .05;
+    }
+    victor.set(speed);
   }
 
   @Override
@@ -169,7 +186,7 @@ public class Robot extends TimedRobot {
    new Pose2d(0, 0, new Rotation2d(0)),
    // Pass through these two interior waypoints, making an 's' curve path
     List.of(
-          // new Translation2d(1, 1),
+           new Translation2d(1.2, 1.524)
           // new Translation2d(2, 0)
           // new Translation2d(3, -1)
           //new Translation2d(4,0)
@@ -179,7 +196,7 @@ public class Robot extends TimedRobot {
 
     ),
    // End 3 meters straight ahead of where we started, facing forward
-   new Pose2d(3, 0, Rotation2d.fromDegrees(0)),
+   new Pose2d(2.69, 2.515, Rotation2d.fromDegrees(101)),
    // Pass config
    config
   );

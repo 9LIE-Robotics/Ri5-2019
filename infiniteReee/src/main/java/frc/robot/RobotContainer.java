@@ -24,9 +24,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   // Wheel Shooter Subsystem and Commands
-  private final WheelShooter m_wheelShooter = new WheelShooter();
-  private final FireCells fireCells = new FireCells(m_wheelShooter);
-  private final StopShooter stopShooter = new StopShooter(m_wheelShooter);
+  //private final WheelShooter m_wheelShooter = new WheelShooter();
+  //private final FireCells fireCells = new FireCells(m_wheelShooter);
+  //private final StopShooter stopShooter = new StopShooter(m_wheelShooter);
 
   //private final Drivetrain driveTrain = Drivetrain.getInstance();
 
@@ -45,7 +45,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    OI.getShootButton().whenActive(fireCells);
-    OI.getShootButton().whenInactive(stopShooter);
+    //OI.getShootButton().whenActive(fireCells);
+    //OI.getShootButton().whenInactive(fireCells);
   }
 }
