@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import java.awt.Color;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -22,6 +24,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.robot.OI;
+import frc.robot.pixy2api.Pixy2;
+import frc.robot.pixy2api.Pixy2Video;
+import frc.robot.pixy2api.Pixy2.LinkType;
+import frc.robot.pixy2api.Pixy2Video.RGB;
 
 public class Drivetrain extends SubsystemBase {
   public static Drivetrain instance = new Drivetrain();
@@ -51,16 +57,17 @@ public class Drivetrain extends SubsystemBase {
     m_leftMotor = new CANSparkMax(2, MotorType.kBrushless);
     dfDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     currentState = systemStates.OPEN_LOOP;
+    requestedState = systemStates.OPEN_LOOP;
     gyro = new AHRS(SPI.Port.kMXP);
     odometry = new DifferentialDriveOdometry(getHeading());
     m_rightMotor.setInverted(true);
     m_leftMotor.setInverted(false);
     m_rightMotor.getEncoder().setPositionConversionFactor(1.0 / 8.45 * Math.PI * Units.inchesToMeters(4));
     m_leftMotor.getEncoder().setPositionConversionFactor(1.0 / 8.45 * Math.PI * Units.inchesToMeters(4));
-    //m_rightMotor.getEncoder().setPositionConversionFactor(1.0);
-    //m_leftMotor.getEncoder().setPositionConversionFactor(1.0);
     resetEncoders();
     dfDrive.setMaxOutput(.7);
+    dfDrive.setRightSideInverted(false);
+    
   }
   
   
@@ -83,7 +90,7 @@ public class Drivetrain extends SubsystemBase {
   public void resetGyro() {
     gyro.reset();
   }
-  public DifferentialDriveWheelSpeeds getSpeeds() {
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(
       m_leftMotor.getEncoder().getVelocity() / 8.45 * Units.inchesToMeters(4) * Math.PI / 60.0,
       m_rightMotor.getEncoder().getVelocity() / 8.45 * Units.inchesToMeters(4) * Math.PI / 60.0  
@@ -112,6 +119,7 @@ public class Drivetrain extends SubsystemBase {
   public void arcade() {
     dfDrive.arcadeDrive(OI.getDriveAmount(), OI.getSteerAmount());
   }
+
   public void tankVoltageDrive(double leftVoltage, double rightVoltage) {
     m_leftMotor.setVoltage(leftVoltage);
     m_rightMotor.setVoltage(rightVoltage);
@@ -123,52 +131,21 @@ public class Drivetrain extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
-  private double kS = 0.0;
-  private double kD = 0.0;
-  private double kA = 0.0;
-  private double voltageApplied = 0.0;
-  private boolean hasCal = false;
-  private void calibratekS() {
-    double stepValue = 0.001;
-    
-    if(getSpeeds().leftMetersPerSecond < 0.01 && !hasCal) {
-      tankVoltageDrive(voltageApplied, voltageApplied);
-      voltageApplied += stepValue;
-    } else {
-      hasCal = true;
-      kS = voltageApplied;
-      SmartDashboard.putNumber("kS", kS);
-    }
-  }
-  private double[] voltages;
-  private double[] speeds;
-  private double oldSpeed = 0.0;
-  private void calibratekD() {
-    double testVoltage = 7.0;//SmartDashboard.getNumber("Voltage", 0.0);
-    tankVoltageDrive(testVoltage, testVoltage);
-    double deltaSpeed = getSpeeds().leftMetersPerSecond - oldSpeed;
-    if (deltaSpeed < .05) {
-      SmartDashboard.putNumber("speed", oldSpeed);
-    }
-    oldSpeed = getSpeeds().leftMetersPerSecond;
-  }
+  
   
 
   @Override
   public void periodic() {
-    // switch(currentState){
-    //   case NEUTRAL:
-    //     break;
-    //   case OPEN_LOOP:
-    //     arcade();
-    //     break;
-    //   case CALIBRATIONKS:
-    //     calibratekS();
-    //     break;
-    //   case CALIBRATIONKD:
-    //     calibratekD();
-    //     break;
-    // }
+    //System.out.println(currentState);
+    //currentState = systemStates.OPEN_LOOP;
+    switch(currentState){
+      case NEUTRAL:
+        break;
+      case OPEN_LOOP:
+        
+        //arcade();
+        break;
+    }
     //double volts = feedforward.calculate(getSpeeds().leftMetersPerSecond);
     //tankVoltageDrive(volts, volts);
     if(OI.getResetGyroButton()) {
@@ -176,8 +153,10 @@ public class Drivetrain extends SubsystemBase {
     }
     pose = odometry.update(getHeading(), getLeftDistance(), getRightDistance());
     defaultStateChange();
+    
+    
     //System.out.println(getRightDistance());
-    System.out.println(getPose().getTranslation().getX() + " , " + getPose().getTranslation().getY() 
-      + " , " + getPose().getRotation().getDegrees());
+    // System.out.println(getPose().getTranslation().getX() + " , " + getPose().getTranslation().getY() 
+    //   + " , " + getPose().getRotation().getDegrees());
   }
 }

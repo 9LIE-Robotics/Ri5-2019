@@ -3,16 +3,16 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class OI {
-    private static boolean usingXBoxController = false;
+    private static boolean usingXBoxController = true;
     private static Joystick driveController = new Joystick(0);
     private static Joystick steerController = (usingXBoxController) ? null : new Joystick(1);
 
     public static double getDriveAmount() {
-        return (usingXBoxController) ? driveController.getRawAxis(0) * -0.5 : steerController.getX();
+        return (usingXBoxController) ? driveController.getRawAxis(5) : driveController.getY();
     }
 
     public static double getSteerAmount() {
-        return (usingXBoxController) ? driveController.getRawAxis(5) * -0.5 : driveController.getY() * -1;
+        return (usingXBoxController) ? driveController.getRawAxis(0) : steerController.getX();
     }
     public static boolean getResetGyroButton() {
         return driveController.getRawButton(8);

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-  public static Intake instance = new Intake();
   private final Victor m_intakeMotor;
 
   /**
@@ -20,13 +19,6 @@ public class Intake extends SubsystemBase {
    */
   public Intake() {
     m_intakeMotor = new Victor(Constants.INTAKE_PORT);
-  }
-
-  /**
-   * @return the instance of the drive train to be used
-   */
-  public static Intake getInstance() {
-    return instance;
   }
 
   public void setSpeed(double speed) {

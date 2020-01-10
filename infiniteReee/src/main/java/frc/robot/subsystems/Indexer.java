@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Indexer extends SubsystemBase {
-  public static Indexer instance = new Indexer();
   private final Victor m_indexerMotor;
 
   /**
@@ -20,13 +19,6 @@ public class Indexer extends SubsystemBase {
    */
   public Indexer() {
     m_indexerMotor = new Victor(Constants.INDEXER_PORT);
-  }
-
-  /**
-   * @return the instance of the drive train to be used
-   */
-  public static Indexer getInstance() {
-    return instance;
   }
 
   public void setSpeed(double speed) {

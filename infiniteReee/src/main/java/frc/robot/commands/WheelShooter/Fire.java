@@ -16,6 +16,7 @@ import frc.robot.Constants;
  */
 public class Fire extends CommandBase {
   private final WheelShooter m_wheelShooter;
+  private double speed;
 
   /**
    * Creates a new Fire.
@@ -24,6 +25,7 @@ public class Fire extends CommandBase {
    */
   public Fire(WheelShooter wheelShooter) {
     m_wheelShooter = wheelShooter;
+    speed = 0.0;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_wheelShooter);
   }
@@ -31,13 +33,22 @@ public class Fire extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    speed = 0;
     m_wheelShooter.setWheelSpeed(Constants.KICK_SPEED);
-    m_wheelShooter.setWheelSpeed(Constants.SHOOT_SPEED);
+    m_wheelShooter.setWheelSpeed(speed);
+  }
+
+  @Override
+  public void execute() {
+    if( speed < .95) {
+       speed += .05;
+    }
+    m_wheelShooter.setWheelSpeed(speed);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return speed > .95;
   }
 }

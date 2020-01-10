@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class WheelShooter extends SubsystemBase {
-  public static WheelShooter instance = new WheelShooter();
   private final Victor m_wheelMotor;
   private final Victor m_kickerMotor;
 
@@ -22,13 +21,6 @@ public class WheelShooter extends SubsystemBase {
   public WheelShooter() {
     m_wheelMotor = new Victor(Constants.WHEEL_SHOOTER_PORT);
     m_kickerMotor = new Victor(Constants.KICKER_SHOOTER_PORT);
-  }
-
-  /**
-   * @return the instance of the drive train to be used
-   */
-  public static WheelShooter getInstance() {
-    return instance;
   }
 
   public void periodic() {

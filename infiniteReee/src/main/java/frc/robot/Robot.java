@@ -41,9 +41,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private Drivetrain drivetrain = Drivetrain.getInstance();
-  PowerDistributionPanel pd = new PowerDistributionPanel();
-  //private WheelShooter wheelShooter = new WheelShooter();
-  //Victor victor;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -53,8 +51,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    //victor = new Victor(0);
-    
   }
 
   /**
@@ -118,8 +114,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     speed = 0.0;
-    drivetrain.setSystemState(systemStates.OPEN_LOOP);
-    
+    drivetrain.setSystemState(systemStates.OPEN_LOOP); 
   }
 
   /**
@@ -137,11 +132,6 @@ public class Robot extends TimedRobot {
     else {
       drivetrain.setSystemState(systemStates.OPEN_LOOP);
     }
-    // SmartDashboard.putNumber("amps", pd.getCurrent(0));
-    // if( speed < .95) {
-    //   speed += .05;
-    // }
-    // victor.set(speed);
   }
 
   @Override
@@ -202,7 +192,7 @@ public class Robot extends TimedRobot {
    config
   );
   RamseteCommand ramseteCommand = new RamseteCommand( exampleTrajectory, drivetrain::getPose, new RamseteController(kRamseteB, kRamseteZeta),
-   drivetrain.getFeedForward(), drivetrain.getKinematics(), drivetrain::getSpeeds, new edu.wpi.first.wpilibj.controller.PIDController(1.5, 0.0, 0.0), 
+   drivetrain.getFeedForward(), drivetrain.getKinematics(), drivetrain::getWheelSpeeds, new edu.wpi.first.wpilibj.controller.PIDController(1.5, 0.0, 0.0), 
    new edu.wpi.first.wpilibj.controller.PIDController(1.5,0.0,0.0), drivetrain::tankVoltageDrive, drivetrain);
   
   
