@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.*;
 import frc.robot.commands.WheelShooter.*;
+import frc.robot.commands.Drivetrain.OpenLoop;
+import frc.robot.commands.Drivetrain.ResetGyro;
+import frc.robot.commands.Drivetrain.VisionDrive;
 import frc.robot.commands.Intake.*;
 
 /**
@@ -22,6 +25,8 @@ import frc.robot.commands.Intake.*;
 public class RobotContainer {
   private final WheelShooter m_wheelShooter = new WheelShooter();
   private final Intake m_intake = new Intake();
+  private final Drivetrain m_drivetrain = Drivetrain.getInstance();
+  private final PixyCam m_pixy = new PixyCam();
 
 
   /**
@@ -30,6 +35,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    m_drivetrain.setDefaultCommand(new OpenLoop(m_drivetrain));
   }
 
   /**
@@ -41,6 +47,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
     OI.getShootButton().whenActive(new Fire(m_wheelShooter));
     OI.getShootButton().whenInactive(new StopShooter(m_wheelShooter));
+
+    OI.getResetGyroButton().whenActive(new ResetGyro(m_drivetrain));
+    OI.isVisionDriving().whenHeld(new VisionDrive(m_drivetrain, m_pixy));
+    
 
     OI.getIntakeButton().whenActive(new Swallow(m_intake));
     OI.getIntakeButton().whenInactive(new StopIntake(m_intake));

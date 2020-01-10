@@ -8,29 +8,27 @@ public class OI {
     private static Joystick steerController = (usingXBoxController) ? null : new Joystick(1);
 
     public static double getDriveAmount() {
-        return (usingXBoxController) ? driveController.getRawAxis(5) : driveController.getY();
+        return (usingXBoxController) ? driveController.getRawAxis(5) * -.8 : driveController.getY();
     }
 
     public static double getSteerAmount() {
-        return (usingXBoxController) ? driveController.getRawAxis(0) : steerController.getX();
+        return (usingXBoxController) ? driveController.getRawAxis(0) * 0.6 : steerController.getX();
     }
-    public static boolean getResetGyroButton() {
-        return driveController.getRawButton(8);
-    }
-
-    public static boolean getCalibrateKS() {
-        return driveController.getRawButton(7);
+    public static JoystickButton getResetGyroButton() {
+        return new JoystickButton(driveController, 6);
     }
 
-    public static boolean getCalibrateKD() {
-        return driveController.getRawButton(6);
-    }
+    
 
     public static JoystickButton getShootButton() {
         return new JoystickButton(driveController, 1);
     }
 
     public static JoystickButton getIntakeButton() {
-        return new JoystickButton(driveController, 2);
+        return new JoystickButton(driveController, 5);
+    }
+
+    public static JoystickButton isVisionDriving() {
+        return new JoystickButton(driveController,3);
     }
 }

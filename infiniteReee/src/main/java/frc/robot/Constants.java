@@ -21,13 +21,13 @@ public final class Constants {
      */
 
     // CAN IDs
-    public final static int DRIVE_LEFT_ID = 0;
+    public final static int DRIVE_LEFT_ID = 2;
     public final static int DRIVE_RIGHT_ID = 1;
 
     // PWM PORTS
     public final static int WHEEL_SHOOTER_PORT = 0;
-    public final static int KICKER_SHOOTER_PORT = 1;
-    public final static int INTAKE_PORT = 2;
+    public final static int KICKER_SHOOTER_PORT = 5;
+    public final static int INTAKE_PORT = 1;
     public final static int INDEXER_PORT = 3;
 
     // WHEEL SHOOTER CONSTANTS
@@ -37,5 +37,5 @@ public final class Constants {
 
     // INTAKE CONSTANTS
     public final static double INTAKE_SPIT_SPEED = 0.5;
-    public final static double INTAKE_SWALLOW_SPEED = 0.5;
+    public final static double INTAKE_SWALLOW_SPEED = -0.8;
 }

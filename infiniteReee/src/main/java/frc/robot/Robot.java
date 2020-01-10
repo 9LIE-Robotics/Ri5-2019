@@ -40,8 +40,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private Drivetrain drivetrain = Drivetrain.getInstance();
-
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -85,8 +83,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    drivetrain.resetEncoders();
-    drivetrain.resetGyro();
     m_autonomousCommand = auto();
 
     // schedule the autonomous command (example)
@@ -103,7 +99,6 @@ public class Robot extends TimedRobot {
     //victor.set(0);
   }
   
-  private double speed = 0.0;
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
@@ -113,8 +108,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    speed = 0.0;
-    drivetrain.setSystemState(systemStates.OPEN_LOOP); 
   }
 
   /**
@@ -123,15 +116,6 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
-    if(OI.getCalibrateKD()) {
-      drivetrain.setSystemState(systemStates.CALIBRATIONKD);
-    }
-    else if (OI.getCalibrateKS()) {
-      drivetrain.setSystemState(systemStates.CALIBRATIONKS);
-    }
-    else {
-      drivetrain.setSystemState(systemStates.OPEN_LOOP);
-    }
   }
 
   @Override
@@ -144,15 +128,15 @@ public class Robot extends TimedRobot {
    * This function is called periodically during test mode.
    */
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
   public static final double kTrackwidthMeters = Units.inchesToMeters(24);
-    public static final double kMaxSpeedMetersPerSecond = 1;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
-     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
-     public static final double kRamseteB = 2;
-     public static final double kRamseteZeta = 0.7;
+  public static final double kMaxSpeedMetersPerSecond = 1;
+  public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
+  // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
+  public static final double kRamseteB = 2;
+  public static final double kRamseteZeta = 0.7;
+
   public Command auto() {
     
     Drivetrain drivetrain = Drivetrain.getInstance();

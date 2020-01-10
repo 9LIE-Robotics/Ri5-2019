@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.robot.OI;
 import frc.robot.pixy2api.Pixy2;
@@ -39,9 +40,13 @@ public class Drivetrain extends SubsystemBase {
   private AHRS gyro; 
   private Pose2d pose = new Pose2d();
   private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(.2, 3.427, .0144);
+  
+  
+
   public enum systemStates {
     NEUTRAL,
     OPEN_LOOP,
+    VISION,
     CALIBRATIONKS, 
     CALIBRATIONKD
   }
@@ -69,8 +74,7 @@ public class Drivetrain extends SubsystemBase {
     dfDrive.setRightSideInverted(false);
     
   }
-  
-  
+   
   /**
    * @return the instance of the drive tra
    * in to be used
@@ -78,34 +82,43 @@ public class Drivetrain extends SubsystemBase {
   public DifferentialDriveKinematics getKinematics() {
     return kinematics;
   }
+
   public SimpleMotorFeedforward getFeedForward() {
     return feedforward;
   }
+
   public static Drivetrain getInstance() {
     return instance;
   }
+
   public Rotation2d getHeading() {
     return  Rotation2d.fromDegrees(-gyro.getAngle());
   }
+
   public void resetGyro() {
     gyro.reset();
   }
+
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(
       m_leftMotor.getEncoder().getVelocity() / 8.45 * Units.inchesToMeters(4) * Math.PI / 60.0,
       m_rightMotor.getEncoder().getVelocity() / 8.45 * Units.inchesToMeters(4) * Math.PI / 60.0  
     );
   }
+
   public double getRightDistance() {
     return m_rightMotor.getEncoder().getPosition();
   }
+
   public double getLeftDistance() {
     return m_leftMotor.getEncoder().getPosition();
   }
+
   public void resetEncoders() {
     m_leftMotor.getEncoder().setPosition(0);
     m_rightMotor.getEncoder().setPosition(0);
   }
+
   private void defaultStateChange() {
 		if(requestedState!=currentState) {
 			currentState = requestedState;
@@ -116,9 +129,10 @@ public class Drivetrain extends SubsystemBase {
     requestedState = state;
   }
 
-  public void arcade() {
-    dfDrive.arcadeDrive(OI.getDriveAmount(), OI.getSteerAmount());
+  public void arcade(double drivePercentPower, double SteerPercent) {
+    dfDrive.arcadeDrive(drivePercentPower, SteerPercent);
   }
+
 
   public void tankVoltageDrive(double leftVoltage, double rightVoltage) {
     m_leftMotor.setVoltage(leftVoltage);
@@ -131,26 +145,23 @@ public class Drivetrain extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
-  
-  
-
   @Override
   public void periodic() {
+    SmartDashboard.putString("Current State", currentState.toString());
     //System.out.println(currentState);
     //currentState = systemStates.OPEN_LOOP;
-    switch(currentState){
-      case NEUTRAL:
-        break;
-      case OPEN_LOOP:
-        
-        //arcade();
-        break;
-    }
-    //double volts = feedforward.calculate(getSpeeds().leftMetersPerSecond);
-    //tankVoltageDrive(volts, volts);
-    if(OI.getResetGyroButton()) {
-      resetGyro();
-    }
+    // switch(currentState){
+    //   case NEUTRAL:
+    //     break;
+    //   case VISION:
+    //     visionDrive();
+    //     break;
+    //   case OPEN_LOOP:
+    //     arcade();
+    //     break;
+    // }
+    
+    
     pose = odometry.update(getHeading(), getLeftDistance(), getRightDistance());
     defaultStateChange();
     
