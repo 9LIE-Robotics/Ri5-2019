@@ -45,10 +45,10 @@ public class Fire extends CommandBase {
     }
     m_wheelShooter.setWheelSpeed(speed);
   }
-
-  // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
-    return speed > .95;
+  public void end(boolean interrupted) {
+    m_wheelShooter.setWheelSpeed(0.0);
+    super.end(interrupted);
   }
+ 
 }

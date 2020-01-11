@@ -28,7 +28,7 @@ public final class Constants {
     public final static int WHEEL_SHOOTER_PORT = 0;
     public final static int KICKER_SHOOTER_PORT = 5;
     public final static int INTAKE_PORT = 1;
-    public final static int INDEXER_PORT = 3;
+    public final static int INDEXER_PORT = 2;
 
     // WHEEL SHOOTER CONSTANTS
     public final static double SHOOT_SPEED = 0.9;

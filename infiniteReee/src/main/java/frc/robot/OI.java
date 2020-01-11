@@ -15,7 +15,7 @@ public class OI {
         return (usingXBoxController) ? driveController.getRawAxis(0) * 0.6 : steerController.getX();
     }
     public static JoystickButton getResetGyroButton() {
-        return new JoystickButton(driveController, 6);
+        return new JoystickButton(driveController, 7);
     }
 
     
@@ -30,5 +30,11 @@ public class OI {
 
     public static JoystickButton isVisionDriving() {
         return new JoystickButton(driveController,3);
+    }
+    public static JoystickButton getindexButton() {
+        return new JoystickButton(driveController, 6);
+    }
+    public static JoystickButton getReverseIndexButton() {
+        return new JoystickButton(driveController, 2);
     }
 }

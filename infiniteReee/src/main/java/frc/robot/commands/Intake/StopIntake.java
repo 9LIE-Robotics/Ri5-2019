@@ -17,12 +17,12 @@ public class StopIntake extends CommandBase {
   private final Intake m_intake;
 
   /**
-   * Creates a new Spit.
+   * Creates a new FireCells.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public StopIntake(Intake intake) {
-    m_intake = intake;
+  public StopIntake(Intake m_wheelShooter2) {
+    m_intake = m_wheelShooter2;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intake);
   }

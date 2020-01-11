@@ -33,10 +33,15 @@ public class Spit extends CommandBase {
   public void initialize() {
     m_intake.setSpeed(Constants.INTAKE_SPIT_SPEED);
   }
-
-  // Returns true when the command should end.
+  
   @Override
-  public boolean isFinished() {
-    return true;
+  public void execute() {
+    m_intake.setSpeed(Constants.INTAKE_SPIT_SPEED);
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    m_intake.setSpeed(0.0);
+    super.end(interrupted);
   }
 }

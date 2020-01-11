@@ -33,18 +33,15 @@ public class Swallow extends CommandBase {
   public void initialize() {
     m_intake.setSpeed(Constants.INTAKE_SWALLOW_SPEED);
   }
+
   @Override
   public void execute() {
     m_intake.setSpeed(Constants.INTAKE_SWALLOW_SPEED);
   }
+
   @Override
   public void end(boolean interrupted) {
-    //m_intake.setSpeed(0.0);
+    m_intake.setSpeed(0.0);
     super.end(interrupted);
-  }
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return true;
   }
 }  
